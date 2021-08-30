@@ -246,6 +246,7 @@ public:
 
 
         ChatHandler(player->GetSession()).PSendSysMessage("Start to remove guild house");
+        sLog->outBasic("GUILDHOUSE: Start to remove guild house");
 
         // remove creatures from the deleted guild house map
         if (CreatureResult) {
@@ -259,15 +260,20 @@ public:
                         creature->CombatStop();
                         creature->DeleteFromDB();
                         creature->AddObjectToRemoveList();
+                        ChatHandler(player->GetSession()).PSendSysMessage("Delete creature");
+                        sLog->outBasic("GUILDHOUSE: Delete creature");
                     } else {
                         ChatHandler(player->GetSession()).PSendSysMessage("No creature object found");
+                        sLog->outBasic("GUILDHOUSE: No creature object found");
                     }
                 } else {
                     ChatHandler(player->GetSession()).PSendSysMessage("No creature data found");
+                    sLog->outBasic("GUILDHOUSE: No creature data found");
                 }
             } while (CreatureResult->NextRow());
         } else {
             ChatHandler(player->GetSession()).PSendSysMessage("No creature found");
+            sLog->outBasic("GUILDHOUSE: No creature found");
         }
 
 
@@ -286,15 +292,20 @@ public:
                         gobject->DeleteFromDB();
                         gobject->CleanupsBeforeDelete();
                         //delete gobject;
+                        ChatHandler(player->GetSession()).PSendSysMessage("Delete GO");
+                        sLog->outBasic("GUILDHOUSE: Delete GO");
                     } else {
                         ChatHandler(player->GetSession()).PSendSysMessage("No GO object found");
+                        sLog->outBasic("GUILDHOUSE: No GO object found");
                     }
                 } else {
                     ChatHandler(player->GetSession()).PSendSysMessage("No GO data found");
+                    sLog->outBasic("GUILDHOUSE: No GO data found");
                 }
             } while (GameobjResult->NextRow());
         } else {
             ChatHandler(player->GetSession()).PSendSysMessage("No GO found");
+            sLog->outBasic("GUILDHOUSE: No GO found");
         }
         
         // Delete actual guild_house data from characters database
