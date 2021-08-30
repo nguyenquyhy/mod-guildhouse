@@ -69,9 +69,9 @@ public:
             do
             {
                 Field* fields = CreatureResult->Fetch();
-                uint32 lowguid = fields[0].GetInt32();
-                if (CreatureData const* cr_data = sObjectMgr->GetCreatureData(lowguid)) {
-                    if (Creature* creature = map->GetCreature(ObjectGuid::Create<HighGuid::Player>(lowguid)))
+                ObjectGuid::LowType lowguid = fields[0].GetInt32();
+                if (sObjectMgr->GetCreatureData(lowguid)) {
+                    if (Creature* creature = map->GetCreature(ObjectGuid(HighGuid::Unit, 0, lowguid)))
                     {
                         creature->CombatStop();
                         creature->DeleteFromDB();
@@ -87,10 +87,10 @@ public:
             do
             {
                 Field* fields = GameobjResult->Fetch();
-                uint32 lowguid = fields[0].GetInt32();
-                if (GameObjectData const* go_data = sObjectMgr->GetGOData(lowguid)) {
+                ObjectGuid::LowType lowguid = fields[0].GetInt32();
+                if (sObjectMgr->GetGOData(lowguid)) {
                     //if (GameObject* gobject = ObjectAccessor::GetObjectInWorld(lowguid, (GameObject*)NULL))
-                    if (GameObject* gobject = map->GetGameObject(ObjectGuid::Create<HighGuid::Player>(lowguid)))
+                    if (GameObject* gobject = map->GetGameObject(ObjectGuid(HighGuid::GameObject, 0, lowguid)))
                     {
                         gobject->SetRespawnTime(0);
                         gobject->Delete();
@@ -249,9 +249,9 @@ public:
             do
             {
                 Field* fields = CreatureResult->Fetch();
-                uint32 lowguid = fields[0].GetInt32();
-                if (CreatureData const* cr_data = sObjectMgr->GetCreatureData(lowguid)) {
-                    if (Creature* creature = map->GetCreature(ObjectGuid::Create<HighGuid::Player>(lowguid)))
+                ObjectGuid::LowType lowguid = fields[0].GetInt32();
+                if (sObjectMgr->GetCreatureData(lowguid)) {
+                    if (Creature* creature = map->GetCreature(ObjectGuid(HighGuid::Unit, 0, lowguid)))
                     {
                         creature->CombatStop();
                         creature->DeleteFromDB();
@@ -267,10 +267,10 @@ public:
             do
             {
                 Field* fields = GameobjResult->Fetch();
-                uint32 lowguid = fields[0].GetInt32();
-                if (GameObjectData const* go_data = sObjectMgr->GetGOData(lowguid)) {
+                ObjectGuid::LowType lowguid = fields[0].GetInt32();
+                if (sObjectMgr->GetGOData(lowguid)) {
                     //if (GameObject* gobject = ObjectAccessor::GetObjectInWorld(lowguid, (GameObject*)NULL))
-                    if (GameObject* gobject = map->GetGameObject(ObjectGuid::Create<HighGuid::Player>(lowguid)))
+                    if (GameObject* gobject = map->GetGameObject(ObjectGuid(HighGuid::GameObject, 0, lowguid)))
                     {
                         gobject->SetRespawnTime(0);
                         gobject->Delete();
