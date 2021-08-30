@@ -263,7 +263,7 @@ public:
                         sLog->outBasic("GUILDHOUSE: Delete creature");
                     } else {
                         ChatHandler(player->GetSession()).PSendSysMessage("No creature object found");
-                        sLog->outBasic("GUILDHOUSE: No creature object found");
+                        sLog->outBasic("GUILDHOUSE: No creature object found %u %u", cr_data->id, lowguid);
                     }
                 } else {
                     ChatHandler(player->GetSession()).PSendSysMessage("No creature data found");
@@ -295,7 +295,7 @@ public:
                         sLog->outBasic("GUILDHOUSE: Delete GO");
                     } else {
                         ChatHandler(player->GetSession()).PSendSysMessage("No GO object found");
-                        sLog->outBasic("GUILDHOUSE: No GO object found");
+                        sLog->outBasic("GUILDHOUSE: No GO object found %u %u", go_data->id, lowguid);
                     }
                 } else {
                     ChatHandler(player->GetSession()).PSendSysMessage("No GO data found");
