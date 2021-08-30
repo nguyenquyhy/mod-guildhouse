@@ -242,8 +242,7 @@ public:
         // Lets find all of the creatures to be removed
         CreatureResult = WorldDatabase.PQuery("SELECT `guid` FROM `creature` WHERE `map` = 1 AND `phaseMask` = '%u'", guildPhase);
 
-        Map* map = player->GetMap();
-
+        Map* map = sMapMgr->FindMap(1,0);
 
         ChatHandler(player->GetSession()).PSendSysMessage("Start to remove guild house");
         sLog->outBasic("GUILDHOUSE: Start to remove guild house");
