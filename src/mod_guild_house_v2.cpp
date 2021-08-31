@@ -238,11 +238,9 @@ public:
         QueryResult GameobjResult; 
 
         // Lets find all of the gameobjects to be removed       
-        GameobjResult = WorldDatabase.PQuery("SELECT `guid` FROM `gameobject` WHERE `map` = 1 AND `phaseMask` = '%u'", guildPhase);
+        GameobjResult = WorldDatabase.PQuery("SELECT `guid`, `id` FROM `gameobject` WHERE `map` = 1 AND `phaseMask` = '%u'", guildPhase);
         // Lets find all of the creatures to be removed
-        CreatureResult = WorldDatabase.PQuery("SELECT `guid` FROM `creature` WHERE `map` = 1 AND `phaseMask` = '%u'", guildPhase);
-
-        Map* map = sMapMgr->FindMap(1,0);
+        CreatureResult = WorldDatabase.PQuery("SELECT `guid`, `id` FROM `creature` WHERE `map` = 1 AND `phaseMask` = '%u'", guildPhase);
 
         ChatHandler(player->GetSession()).PSendSysMessage("Start to remove guild house");
         sLog->outBasic("GUILDHOUSE: Start to remove guild house");
@@ -252,9 +250,10 @@ public:
             do
             {
                 Field* fields = CreatureResult->Fetch();
-                ObjectGuid::LowType lowguid = fields[0].GetInt32();
+                ObjectGuid::LowType lowguid = fields[0].GetUInt32();
+                uint32 id = fields[1].GetUInt32();
                 if (CreatureData const* cr_data = sObjectMgr->GetCreatureData(lowguid)) {
-                    if (Creature* creature = ChatHandler(player->GetSession()).GetCreatureFromPlayerMapByDbGuid(lowguid))
+                    if (Creature* creature = ObjectAccessor::GetCreature(*player, ObjectGuid::Create<HighGuid::Unit>(id, lowguid)))
                     {
                         creature->CombatStop();
                         creature->DeleteFromDB();
@@ -263,7 +262,7 @@ public:
                         sLog->outBasic("GUILDHOUSE: Delete creature");
                     } else {
                         ChatHandler(player->GetSession()).PSendSysMessage("No creature object found");
-                        sLog->outBasic("GUILDHOUSE: No creature object found %u %u", cr_data->id, lowguid);
+                        sLog->outBasic("GUILDHOUSE: No creature object found %u %u %u", cr_data->id, lowguid, id);
                     }
                 } else {
                     ChatHandler(player->GetSession()).PSendSysMessage("No creature data found");
@@ -284,7 +283,7 @@ public:
                 ObjectGuid::LowType lowguid = fields[0].GetInt32();
                 if (GameObjectData const* go_data = sObjectMgr->GetGOData(lowguid)) {
                     //if (GameObject* gobject = ObjectAccessor::GetObjectInWorld(lowguid, (GameObject*)NULL))
-                    if (GameObject* gobject = ChatHandler(player->GetSession()).GetObjectFromPlayerMapByDbGuid(lowguid))
+                    if (GameObject* gobject = player->GetMap()->GetGameObject(ObjectGuid::Create<HighGuid::GameObject>(go_data->id, lowguid)))
                     {
                         gobject->SetRespawnTime(0);
                         gobject->Delete();
