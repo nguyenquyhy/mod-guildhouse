@@ -280,10 +280,11 @@ public:
             do
             {
                 Field* fields = GameobjResult->Fetch();
-                ObjectGuid::LowType lowguid = fields[0].GetInt32();
+                ObjectGuid::LowType lowguid = fields[0].GetUInt32();
+                uint32 id = fields[1].GetUInt32();
                 if (GameObjectData const* go_data = sObjectMgr->GetGOData(lowguid)) {
                     //if (GameObject* gobject = ObjectAccessor::GetObjectInWorld(lowguid, (GameObject*)NULL))
-                    if (GameObject* gobject = player->GetMap()->GetGameObject(ObjectGuid::Create<HighGuid::GameObject>(go_data->id, lowguid)))
+                    if (GameObject* gobject = player->GetMap()->GetGameObject(ObjectGuid::Create<HighGuid::GameObject>(id, lowguid)))
                     {
                         gobject->SetRespawnTime(0);
                         gobject->Delete();
@@ -294,7 +295,7 @@ public:
                         sLog->outBasic("GUILDHOUSE: Delete GO");
                     } else {
                         ChatHandler(player->GetSession()).PSendSysMessage("No GO object found");
-                        sLog->outBasic("GUILDHOUSE: No GO object found %u %u", go_data->id, lowguid);
+                        sLog->outBasic("GUILDHOUSE: No GO object found %u %u %u", go_data->id, lowguid, id);
                     }
                 } else {
                     ChatHandler(player->GetSession()).PSendSysMessage("No GO data found");
