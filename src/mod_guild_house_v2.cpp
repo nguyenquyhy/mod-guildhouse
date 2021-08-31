@@ -254,7 +254,7 @@ public:
                 Field* fields = CreatureResult->Fetch();
                 ObjectGuid::LowType lowguid = fields[0].GetInt32();
                 if (CreatureData const* cr_data = sObjectMgr->GetCreatureData(lowguid)) {
-                    if (Creature* creature = map->GetCreature(ObjectGuid::Create<HighGuid::Unit>(cr_data->id, lowguid)))
+                    if (Creature* creature = ChatHandler(player->GetSession()).GetCreatureFromPlayerMapByDbGuid(lowguid))
                     {
                         creature->CombatStop();
                         creature->DeleteFromDB();
@@ -284,7 +284,7 @@ public:
                 ObjectGuid::LowType lowguid = fields[0].GetInt32();
                 if (GameObjectData const* go_data = sObjectMgr->GetGOData(lowguid)) {
                     //if (GameObject* gobject = ObjectAccessor::GetObjectInWorld(lowguid, (GameObject*)NULL))
-                    if (GameObject* gobject = map->GetGameObject(ObjectGuid::Create<HighGuid::GameObject>(go_data->id, lowguid)))
+                    if (GameObject* gobject = ChatHandler(player->GetSession()).GetObjectFromPlayerMapByDbGuid(lowguid))
                     {
                         gobject->SetRespawnTime(0);
                         gobject->Delete();
