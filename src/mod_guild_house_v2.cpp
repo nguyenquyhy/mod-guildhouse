@@ -438,7 +438,10 @@ public:
             return;
         }
 
-        sObjectMgr->AddCreatureToGrid(db_guid, sObjectMgr->GetCreatureData(db_guid));
+        sLog->outBasic("GUILDHOUSE: Loaded creature from DB ID %u Raw ID %u", db_guid, creature->GetGUID().GetRawValue());
+        CreatureData const* cr_data = sObjectMgr->GetCreatureData(db_guid);
+        sObjectMgr->AddCreatureToGrid(db_guid, cr_data);
+        sLog->outBasic("GUILDHOUSE: Loaded creature data from DB ID %u ID %u", db_guid, cr_data->id);
         return;
     }
 
