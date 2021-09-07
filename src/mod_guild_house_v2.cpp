@@ -255,17 +255,53 @@ public:
                 if (CreatureData const* cr_data = sObjectMgr->GetCreatureData(lowguid)) {
                     ObjectGuid guid = ObjectGuid::Create<HighGuid::Unit>(cr_data->id, lowguid);
                     sLog->outBasic("GUILDHOUSE: Finding creature with DB ID %u raw ID %u", lowguid, guid.GetRawValue());
-                    if (Creature* creature = ObjectAccessor::GetCreature(*player, guid))
+
+                    // If an alive instance of this spawnId is already found, skip creation
+                    // If only dead instance(s) exist, despawn them and spawn a new (maybe also dead) version
+                    const auto creatureBounds = player->GetMap()->GetCreatureBySpawnIdStore().equal_range(lowguid);
+                    //std::vector <Creature*> despawnList;
+
+                    if (creatureBounds.first != creatureBounds.second)
                     {
-                        creature->CombatStop();
-                        creature->DeleteFromDB();
-                        creature->AddObjectToRemoveList();
-                        ChatHandler(player->GetSession()).PSendSysMessage("Delete creature");
-                        sLog->outBasic("GUILDHOUSE: Delete creature");
-                    } else {
-                        ChatHandler(player->GetSession()).PSendSysMessage("No creature object found");
-                        sLog->outBasic("GUILDHOUSE: No creature object found %u %u", cr_data->id, lowguid);
+                        for (auto itr = creatureBounds.first; itr != creatureBounds.second; ++itr)
+                        {
+                            Creature* creature = itr->second;
+                            creature->CombatStop();
+                            creature->DeleteFromDB();
+                            creature->AddObjectToRemoveList();
+                            ChatHandler(player->GetSession()).PSendSysMessage("Delete creature");
+                            sLog->outBasic("GUILDHOUSE: Delete creature");
+
+                            // if (itr->second->IsAlive())
+                            // {
+                            //     LOG_DEBUG("maps", "Would have spawned %u but %s already exists", spawnId, creatureBounds.first->second->GetGUID().ToString().c_str());
+                            //     return false;
+                            // }
+                            // else
+                            // {
+                            //     despawnList.push_back(itr->second);
+                            //     LOG_DEBUG("maps", "Despawned dead instance of spawn %u (%s)", spawnId, itr->second->GetGUID().ToString().c_str());
+                            // }
+                        }
+
+                        // for (Creature* despawnCreature : despawnList)
+                        // {
+                        //     despawnCreature->AddObjectToRemoveList();
+                        // }
                     }
+
+
+                    // if (Creature* creature = ObjectAccessor::GetCreature(*player, guid))
+                    // {
+                    //     creature->CombatStop();
+                    //     creature->DeleteFromDB();
+                    //     creature->AddObjectToRemoveList();
+                    //     ChatHandler(player->GetSession()).PSendSysMessage("Delete creature");
+                    //     sLog->outBasic("GUILDHOUSE: Delete creature");
+                    // } else {
+                    //     ChatHandler(player->GetSession()).PSendSysMessage("No creature object found");
+                    //     sLog->outBasic("GUILDHOUSE: No creature object found %u %u", cr_data->id, lowguid);
+                    // }
                 } else {
                     ChatHandler(player->GetSession()).PSendSysMessage("No creature data found");
                     sLog->outBasic("GUILDHOUSE: No creature data found");
